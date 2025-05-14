@@ -21,9 +21,24 @@ const LoginPage = () => {
       const response = await axios.post('http://localhost:3306/login', { email, senha });
       setSuccess('Login realizado com sucesso!');
       localStorage.setItem('token', response.data.token);
-      // Redirecionar ou atualizar estado global aqui se necessário
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao fazer login');
+      navigate('/baterponto');
+    } catch (err: unknown) {
+      if (
+        err &&
+        typeof err === 'object' &&
+        'response' in err &&
+        err.response &&
+        typeof err.response === 'object' &&
+        'data' in err.response &&
+        err.response.data &&
+        typeof err.response.data === 'object' &&
+        'message' in err.response.data &&
+        typeof (err.response.data as { message?: string }).message === 'string'
+      ) {
+        setError((err.response.data as { message: string }).message || 'Erro ao fazer login');
+      } else {
+        setError('Erro ao fazer login');
+      }
     } finally {
       setLoading(false);
     }

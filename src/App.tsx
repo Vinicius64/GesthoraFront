@@ -4,6 +4,9 @@ import { createTheme } from '@mui/material/styles';
 import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
 import ResetarSenhaPage from './pages/ResetarSenhaPage';
+import BaterPontoPage from './pages/BaterPontoPage';
+import RotaPrivada from './components/RotaPrivada';
+import UsuarioPage from './pages/UsuarioPage';
 
 // Create a theme instance
 const theme = createTheme({
@@ -25,6 +28,15 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/resetar-senha" element={<ResetarSenhaPage />} />
+          <Route
+            path="/baterponto"
+            element={
+              <RotaPrivada>
+                <BaterPontoPage />
+              </RotaPrivada>
+            }
+          />
+          <Route path="/dados" element={<UsuarioPage />} />
           <Route path="/*" element={
             <Layout>
               <Routes>
