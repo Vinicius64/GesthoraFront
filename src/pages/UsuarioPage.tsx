@@ -6,6 +6,7 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { api } from '../config/api';
 
 // Definição de campos
 const campos = [
@@ -39,7 +40,7 @@ export default function UsuarioPage() {
       try {
         const token = localStorage.getItem('token');
         if (!token) return;
-        const response = await axios.get('http://localhost:3306/employee/profile', {
+        const response = await axios.get(`${api.baseURL}${api.endpoints.employeeProfile}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUsuario(response.data.user);

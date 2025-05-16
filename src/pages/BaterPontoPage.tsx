@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
+import { api } from '../config/api';
 // Importe o componente de mapa de sua preferência, aqui usarei um placeholder
 // Para produção, use algo como @react-google-maps/api ou react-leaflet
 
@@ -34,7 +35,7 @@ const BaterPontoPage = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
-      const response = await axios.get('http://localhost:3306/employee/clock-in/today', {
+      const response = await axios.get(`${api.baseURL}${api.endpoints.clockInToday}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.data.registroPonto && response.data.registroPonto.pontos) {
@@ -52,7 +53,7 @@ const BaterPontoPage = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
-      const response = await axios.get('http://localhost:3306/employee/work-time', {
+      const response = await axios.get(`${api.baseURL}${api.endpoints.workTime}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const h = response.data.horasTrabalhadas?.toString().padStart(2, '0') || '00';
@@ -75,7 +76,7 @@ const BaterPontoPage = () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) return;
-        const response = await axios.get('http://localhost:3306/employee/profile', {
+        const response = await axios.get(`${api.baseURL}${api.endpoints.employeeProfile}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUsuario({
@@ -132,9 +133,7 @@ const BaterPontoPage = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
-      await axios.post('http://localhost:3306/employee/clock-in', {
-        localizacao: localizacao.endereco
-      }, {
+      await axios.post(`${api.baseURL}${api.endpoints.clockIn}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       await carregarPontos(); // Atualiza lista após bater ponto

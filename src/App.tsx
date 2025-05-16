@@ -7,6 +7,7 @@ import ResetarSenhaPage from './pages/ResetarSenhaPage';
 import BaterPontoPage from './pages/BaterPontoPage';
 import RotaPrivada from './components/RotaPrivada';
 import UsuarioPage from './pages/UsuarioPage';
+import CriarUsuarioPage from './pages/CriarUsuarioPage';
 
 // Create a theme instance
 const theme = createTheme({
@@ -37,6 +38,14 @@ function App() {
             }
           />
           <Route path="/dados" element={<UsuarioPage />} />
+          <Route
+            path="/criar-usuario"
+            element={
+              <RotaPrivada>
+                <CriarUsuarioPage />
+              </RotaPrivada>
+            }
+          />
           <Route path="/*" element={
             <Layout>
               <Routes>

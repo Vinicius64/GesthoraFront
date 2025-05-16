@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { Box, Button, Link, TextField, Typography, Paper, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../config/api';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -18,10 +19,18 @@ const LoginPage = () => {
     setError('');
     setSuccess('');
     try {
-      const response = await axios.post('http://localhost:3306/login', { email, senha });
+      const response = await axios.post(`${api.baseURL}${api.endpoints.login}`, { email, senha });
       setSuccess('Login realizado com sucesso!');
       localStorage.setItem('token', response.data.token);
-      navigate('/baterponto');
+      if (response.data.role === 'funcionario') {
+        navigate('/baterponto');
+      } else if (response.data.role === 'admin') {
+        navigate('/criar-usuario');
+      } else if (response.data.role === 'gestor') {
+        navigate('/solicitacoes');
+      } else {
+        navigate('/');
+      }
     } catch (err: unknown) {
       if (
         err &&
