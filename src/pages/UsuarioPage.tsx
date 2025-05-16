@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
+import { Grid } from '@mui/material';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { api } from '../config/api';
@@ -107,7 +107,7 @@ export default function UsuarioPage() {
         <Paper sx={{ bgcolor: '#3de6d1', p: 4, borderRadius: 3, width: '100%', maxWidth: 800 }}>
           <Grid container spacing={3}>
             {campos.map((campo) => (
-              <Grid item xs={12} md={6} key={campo.key}>
+              <Grid key={campo.key} item xs={12} md={6}>
                 <Typography variant="subtitle2" sx={{ color: '#222', fontWeight: 700, mb: 0.5 }}>
                   {campo.label}
                 </Typography>

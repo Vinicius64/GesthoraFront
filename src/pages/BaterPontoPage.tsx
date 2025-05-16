@@ -13,7 +13,7 @@ import { api } from '../config/api';
 function CentralizarMapa({ lat, lng }: { lat: number, lng: number }) {
   const map = useMap();
   useEffect(() => {
-    map.setView([lat, lng]);
+    map.setView([lat, lng], 16);
   }, [lat, lng, map]);
   return null;
 }
@@ -133,7 +133,9 @@ const BaterPontoPage = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
-      await axios.post(`${api.baseURL}${api.endpoints.clockIn}`, {}, {
+      await axios.post(`${api.baseURL}${api.endpoints.clockIn}`, {
+        localizacao: localizacao.endereco
+      }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       await carregarPontos(); // Atualiza lista após bater ponto
@@ -181,17 +183,21 @@ const BaterPontoPage = () => {
         >
           Recarregar Localização
         </Button>
-        <MapContainer center={[localizacao.lat, localizacao.lng]} zoom={16} style={{ height: 400, width: 400 }}>
-          <CentralizarMapa lat={localizacao.lat} lng={localizacao.lng} />
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <Marker position={[localizacao.lat, localizacao.lng]}>
-            <Popup>
-              Você está aqui!
-            </Popup>
-          </Marker>
-        </MapContainer>
+        <div style={{ height: 400, width: 400 }}>
+          <MapContainer 
+            style={{ height: '100%', width: '100%' }}
+          >
+            <CentralizarMapa lat={localizacao.lat} lng={localizacao.lng} />
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker position={[localizacao.lat, localizacao.lng]}>
+              <Popup>
+                Você está aqui!
+              </Popup>
+            </Marker>
+          </MapContainer>
+        </div>
         <Typography sx={{ color: '#fff', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>
           {localizacao.endereco}
         </Typography>
