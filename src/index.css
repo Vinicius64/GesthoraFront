@@ -5,7 +5,6 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -26,6 +25,8 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background: url('./sources/background.png') center center/cover no-repeat fixed;
+  background-color: #f5e7d6; /* cor de fallback suave */
 }
 
 h1 {

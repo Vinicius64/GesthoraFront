@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from 'react';
-import { Box, Button, Typography, Paper, List, ListItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
-import { api } from '../config/api';
-// Importe o componente de mapa de sua preferência, aqui usarei um placeholder
-// Para produção, use algo como @react-google-maps/api ou react-leaflet
+import { api } from '../../config/api';
+import './BaterPontoPage.css';
 
 function CentralizarMapa({ lat, lng }: { lat: number, lng: number }) {
   const map = useMap();
@@ -152,99 +150,64 @@ const BaterPontoPage = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', bgcolor: '#111' }}>
+    <div className="bater-ponto-container">
       {/* Menu lateral */}
-      <Box sx={{ width: 220, bgcolor: '#3de6d1', p: 2, borderRadius: 3, m: 2, height: 'fit-content' }}>
+      <div className="menu-lateral">
         {usuario.cargo && (
-          <Typography variant="subtitle2" sx={{ color: '#111', fontWeight: 700 }}>{usuario.cargo}</Typography>
+          <div className="cargo">{usuario.cargo}</div>
         )}
-        <Typography variant="subtitle1" sx={{ color: '#111', fontWeight: 700, mb: 0 }}>{usuario.nome}</Typography>
-        <Typography variant="body2" sx={{ color: '#111', mb: 1, cursor: 'pointer' }} onClick={() => navigate('/dados')}>Usuário</Typography>
-        <Typography variant="caption" sx={{ color: '#1e8888', mb: 1, ml: 1, display: 'block' }}>Ver meus dados de usuário.</Typography>
-        <Typography variant="body2" sx={{ color: '#111', mb: 1, cursor: 'pointer' }}>Meus pontos</Typography>
-        <Typography variant="caption" sx={{ color: '#1e8888', mb: 1, ml: 1, display: 'block' }}>Ver pontos/carga horária.</Typography>
-        <Typography variant="body2" sx={{ color: '#111', mb: 1, cursor: 'pointer', fontWeight: 700 }}>Bater Ponto</Typography>
-        <Typography variant="caption" sx={{ color: '#1e8888', mb: 1, ml: 1, display: 'block' }}>Marcar horário de entrada/saída</Typography>
-        <Typography
-          variant="body2"
-          sx={{ color: '#111', mt: 2, cursor: 'pointer' }}
-          onClick={logout}
-        >
-          Sair
-        </Typography>
-      </Box>
+        <div className="nome">{usuario.nome}</div>
+        <div className="link" onClick={() => navigate('/dados')}>Usuário</div>
+        <div className="descricao">Ver meus dados de usuário.</div>
+        <div className="link">Meus pontos</div>
+        <div className="descricao">Ver pontos/carga horária.</div>
+        <div className="link">Bater Ponto</div>
+        <div className="descricao">Marcar horário de entrada/saída</div>
+        <div className="link" onClick={logout}>Sair</div>
+      </div>
 
       {/* Centro - Mapa e localização */}
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <Button
-          variant="contained"
-          sx={{ bgcolor: '#3de6d1', color: '#111', fontWeight: 700, mb: 3, boxShadow: 3, '&:hover': { bgcolor: '#2bc9b6' } }}
-          onClick={recarregarLocalizacao}
-        >
+      <div className="area-central">
+        <button className="botao-localizacao" onClick={recarregarLocalizacao}>
           Recarregar Localização
-        </Button>
-        <div style={{ height: 400, width: 400 }}>
-          <MapContainer 
-            style={{ height: '100%', width: '100%' }}
-          >
+        </button>
+        <div className="mapa-container">
+          <MapContainer style={{ height: '100%', width: '100%' }}>
             <CentralizarMapa lat={localizacao.lat} lng={localizacao.lng} />
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Marker position={[localizacao.lat, localizacao.lng]}>
-              <Popup>
-                Você está aqui!
-              </Popup>
+              <Popup>Você está aqui!</Popup>
             </Marker>
           </MapContainer>
         </div>
-        <Typography sx={{ color: '#fff', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>
-          {localizacao.endereco}
-        </Typography>
-      </Box>
+        <div className="endereco">{localizacao.endereco}</div>
+      </div>
 
       {/* Direita - Bater ponto, horário, pontos batidos */}
-      <Box sx={{ width: 350, bgcolor: '#3de6d1', p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <Typography variant="h4" sx={{ color: '#fff', fontWeight: 500, mb: 2, textAlign: 'center' }}>
-          Bem-vindo {usuario.nome}
-        </Typography>
+      <div className="area-direita">
+        <h1 className="titulo-bem-vindo">Bem-vindo {usuario.nome}</h1>
         {usuario.cargo && (
-          <Typography variant="subtitle1" sx={{ color: '#fff', fontWeight: 400, mb: 2, textAlign: 'center' }}>
-            {usuario.cargo}
-          </Typography>
+          <div className="subtitulo-cargo">{usuario.cargo}</div>
         )}
-        <Box sx={{ bgcolor: '#fff', color: '#111', borderRadius: 2, px: 2, py: 1, mb: 3, fontWeight: 700, fontSize: 18 }}>
-          {horaAtual.toLocaleTimeString('pt-BR')}
-        </Box>
-        <Button
-          variant="contained"
-          sx={{ bgcolor: '#111', color: '#fff', fontWeight: 700, fontSize: 32, py: 2, boxShadow: 4, mb: 4, '&:hover': { bgcolor: '#222' } }}
-          fullWidth
-          onClick={baterPonto}
-        >
+        <div className="relogio">{horaAtual.toLocaleTimeString('pt-BR')}</div>
+        <button className="botao-bater-ponto" onClick={baterPonto}>
           Bater Ponto
-        </Button>
-        <Typography sx={{ color: '#111', fontWeight: 500, mb: 1, mt: 2, fontSize: 18 }}>Pontos Batidos</Typography>
-        <Paper elevation={6} sx={{ bgcolor: '#111', color: '#fff', borderRadius: 2, mb: 3, width: '100%', p: 2 }}>
-          <List>
-            {pontos.length === 0 && (
-              <ListItem sx={{ color: '#fff', fontWeight: 400, fontSize: 16, p: 0, mb: 1 }}>
-                Nenhum ponto registrado hoje.
-              </ListItem>
-            )}
-            {pontos.map((p, i) => (
-              <ListItem key={p.id_ponto || i} sx={{ color: '#fff', fontWeight: 700, fontSize: 16, p: 0, mb: 1 }}>
-                {new Date(p.data_hora).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} - {p.localizacao?.length > 25 ? p.localizacao.slice(0, 25) + '...' : p.localizacao}
-              </ListItem>
-            ))}
-          </List>
-        </Paper>
-        <Typography sx={{ color: '#111', fontWeight: 500, mb: 1, fontSize: 18 }}>Horas Trabalhadas</Typography>
-        <Paper elevation={6} sx={{ bgcolor: '#111', color: '#fff', borderRadius: 2, width: '100%', p: 2, textAlign: 'center', fontWeight: 700, fontSize: 22 }}>
-          {horasTrabalhadas}
-        </Paper>
-      </Box>
-    </Box>
+        </button>
+        <div className="titulo-secao">Pontos Batidos</div>
+        <div className="lista-pontos">
+          {pontos.length === 0 && (
+            <div className="item-ponto">Nenhum ponto registrado hoje.</div>
+          )}
+          {pontos.map((p, i) => (
+            <div key={p.id_ponto || i} className="item-ponto">
+              {new Date(p.data_hora).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} - {p.localizacao?.length > 25 ? p.localizacao.slice(0, 25) + '...' : p.localizacao}
+            </div>
+          ))}
+        </div>
+        <div className="titulo-secao">Horas Trabalhadas</div>
+        <div className="horas-trabalhadas">{horasTrabalhadas}</div>
+      </div>
+    </div>
   );
 };
 

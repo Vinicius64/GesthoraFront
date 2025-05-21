@@ -12,5 +12,6 @@ export const api = {
     clockIn: '/employee/clock-in',
     clockInToday: '/employee/clock-in/today',
     workTime: '/employee/work-time',
+    resetPassword: '/employee/reset-password/send-code',
   },
 }; 

@@ -1,0 +1,273 @@
+@import '../../styles/variables.css';
+
+.bater-ponto-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-background);
+  position: relative;
+}
+
+.bater-ponto-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../../sources/background.png');
+  background-size: 100% auto;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.menu-lateral,
+.area-central,
+.area-direita {
+  position: relative;
+  z-index: 1;
+}
+
+.menu-lateral {
+  width: 280px;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  margin: var(--spacing-md);
+  height: fit-content;
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(8px);
+}
+
+.menu-lateral .cargo {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-xs);
+}
+
+.menu-lateral .nome {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.menu-lateral .link {
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-xs);
+  cursor: pointer;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.menu-lateral .link:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-text-light);
+}
+
+.menu-lateral .descricao {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
+  margin-left: var(--spacing-md);
+  display: block;
+  font-size: 0.8rem;
+}
+
+.area-central {
+  flex: 1;
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.titulo-pagina {
+  color: var(--color-text-light);
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-xl);
+  text-align: center;
+}
+
+.mapa-container {
+  width: 400px;
+  height: 400px;
+  background-color: var(--color-background-light);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.botao-localizacao {
+  width: 100%;
+  max-width: 400px;
+  padding: var(--spacing-md);
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: var(--spacing-md);
+  transition: all var(--transition-fast);
+}
+
+.botao-localizacao:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
+.botao-localizacao:active {
+  transform: translateY(0);
+}
+
+.botao-bater-ponto {
+  width: 100%;
+  max-width: 400px;
+  padding: var(--spacing-md);
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.botao-bater-ponto:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
+.botao-bater-ponto:active {
+  transform: translateY(0);
+}
+
+.area-direita {
+  width: 350px;
+  padding: var(--spacing-xl);
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: var(--border-radius-lg);
+  margin: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  backdrop-filter: blur(8px);
+}
+
+.titulo-secao {
+  color: var(--color-text-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.relogio {
+  background-color: var(--color-background-light);
+  color: var(--color-text-primary);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  font-weight: 600;
+  font-size: 1.25rem;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.subtitulo-cargo {
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.endereco {
+  color: var(--color-text-primary);
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: var(--spacing-md);
+  background-color: var(--color-background-light);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+  margin-bottom: var(--spacing-md);
+}
+
+.horas-trabalhadas {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border-radius: var(--border-radius-md);
+  width: 100%;
+  padding: var(--spacing-md);
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  margin-top: auto;
+}
+
+.lista-pontos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: var(--color-background-light);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.item-ponto {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-ponto:last-child {
+  border-bottom: none;
+}
+
+.item-ponto .horario {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.item-ponto .tipo {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-sm);
+}
+
+.error-message {
+  color: var(--color-error);
+  background-color: rgba(192, 57, 43, 0.1);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.success-message {
+  color: var(--color-success);
+  background-color: rgba(39, 174, 96, 0.1);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+  font-size: 0.9rem;
+} 
