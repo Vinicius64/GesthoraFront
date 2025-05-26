@@ -25,15 +25,16 @@ const LoginPage = () => {
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         setSuccess('Login realizado com sucesso!');
-        // Tenta pegar o perfil do usuário
-        const perfil = response.data.perfil || response.data.role || response.data.user?.perfil || response.data.user?.role;
-        setTimeout(() => {
-          if (perfil && perfil.toLowerCase().includes('admin')) {
-            navigate('/criar-usuario');
-          } else {
-            navigate('/bater-ponto');
-          }
-        }, 1000);
+        const perfil = response.data.role;
+        if (perfil) localStorage.setItem('perfil', perfil.toLowerCase());
+        if (perfil && perfil.toLowerCase().includes('admin')) {
+          navigate('/criar-usuario');
+        } else if (perfil && perfil.toLowerCase().includes('gestor')) {
+          console.log('Redirecionando gestor para /solicitacoes');
+          navigate('/solicitacoes');
+        } else {
+          navigate('/bater-ponto');
+        }
       }
     } catch (error: any) {
       setError(error.response?.data?.message || 'Erro ao fazer login');

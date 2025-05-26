@@ -151,6 +151,16 @@
   font-weight: 600;
 }
 
+.gesthora-title {
+  color: var(--color-text-primary);
+  font-weight: 900;
+  font-size: 2.7rem;
+  letter-spacing: 1px;
+  margin: 0;
+  text-shadow: 0 2px 8px #fff8;
+  text-align: center;
+}
+
 @media (max-width: 600px) {
   .login-form-container {
     max-width: 98vw;

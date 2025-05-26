@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { api } from '../../config/api';
@@ -39,11 +39,31 @@ function formatarData(data: string) {
   return d.toLocaleDateString('pt-BR');
 }
 
+function formatarCPF(valor: string) {
+  return valor
+    .replace(/\D/g, '')
+    .slice(0, 11)
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+}
+
+function formatarTelefone(valor: string) {
+  valor = valor?.replace(/\D/g, '').slice(0, 11) || '';
+  if (valor.length <= 10) {
+    return valor.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3').replace(/-$/, '');
+  } else {
+    return valor.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3').replace(/-$/, '');
+  }
+}
+
+function formatarCEP(valor: string) {
+  return (valor || '').replace(/\D/g, '').slice(0, 8).replace(/(\d{5})(\d{0,3})/, (m, p1, p2) => p2 ? `${p1}-${p2}` : p1);
+}
+
 const UsuarioPage = () => {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
-  const [editando, setEditando] = useState(false);
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
+  const [error,setError] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -56,36 +76,12 @@ const UsuarioPage = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUsuario(response.data.user);
-      } catch {
+      } catch(error) {
         setError('Erro ao carregar dados do usuário');
       }
     };
     fetchUsuario();
   }, []);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsuario((prev) => ({
-      ...prev!,
-      [e.target.name]: e.target.value ?? ''
-    }));
-  };
-
-  const handleSalvar = async (e) => {
-    e.preventDefault();
-    setSuccess('');
-    setError('');
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) throw new Error('Token não encontrado');
-      await axios.put(`${api.baseURL}${api.endpoints.employeeProfile}`, usuario, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setSuccess('Dados atualizados com sucesso!');
-      setEditando(false);
-    } catch {
-      setError('Erro ao atualizar dados');
-    }
-  };
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -122,7 +118,13 @@ const UsuarioPage = () => {
                 <div className="usuario-label">{campo.label}</div>
                 <input
                   className="usuario-input"
-                  value={campo.key === 'data_nascimento' ? formatarData(usuario[campo.key as keyof Usuario]) : usuario[campo.key as keyof Usuario] || ''}
+                  value={
+                    campo.key === 'data_nascimento' ? formatarData(usuario[campo.key as keyof Usuario]) :
+                    campo.key === 'cpf' ? formatarCPF(usuario[campo.key as keyof Usuario] as string) :
+                    campo.key === 'telefone' ? formatarTelefone(usuario[campo.key as keyof Usuario] as string) :
+                    campo.key === 'cep' ? formatarCEP(usuario[campo.key as keyof Usuario] as string) :
+                    usuario[campo.key as keyof Usuario] || ''
+                  }
                   readOnly
                 />
               </div>

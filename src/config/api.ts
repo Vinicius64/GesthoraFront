@@ -13,5 +13,9 @@ export const api = {
     clockInToday: '/employee/clock-in/today',
     workTime: '/employee/work-time',
     resetPassword: '/employee/reset-password/send-code',
+    editUser: '/edit-user',
+    findUser: '/find-user',
+    managerEmployees: '/manager/employees',
+    managerEmployee: (id: string) => `/manager/employee/${id}`,
   },
 }; 

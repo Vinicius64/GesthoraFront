@@ -28,7 +28,6 @@ const BaterPontoPage = () => {
   const [usuario, setUsuario] = useState<{ nome: string; cargo: string }>({ nome: '', cargo: '' });
   const navigate = useNavigate();
 
-  // Função para buscar pontos do dia
   const carregarPontos = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -46,7 +45,7 @@ const BaterPontoPage = () => {
     }
   };
 
-  // Função para buscar tempo trabalhado do dia
+  
   const carregarTempoTrabalhado = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -86,8 +85,8 @@ const BaterPontoPage = () => {
       }
     };
     fetchUsuario();
-    carregarPontos(); // Carrega pontos ao abrir a página
-    carregarTempoTrabalhado(); // Carrega tempo trabalhado ao abrir a página
+    carregarPontos(); 
+    carregarTempoTrabalhado(); 
   }, []);
 
   const recarregarLocalizacao = () => {
@@ -136,8 +135,8 @@ const BaterPontoPage = () => {
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      await carregarPontos(); // Atualiza lista após bater ponto
-      await carregarTempoTrabalhado(); // Atualiza tempo trabalhado após bater ponto
+      await carregarPontos(); 
+      await carregarTempoTrabalhado(); 
       alert('Ponto batido!');
     } catch (error) {
       alert('Erro ao bater ponto!');
@@ -159,7 +158,7 @@ const BaterPontoPage = () => {
         <div className="nome">{usuario.nome}</div>
         <div className="link" onClick={() => navigate('/dados')}>Usuário</div>
         <div className="descricao">Ver meus dados de usuário.</div>
-        <div className="link">Meus pontos</div>
+        <div className="link" onClick={() => navigate('/meus-pontos')}>Meus pontos</div>
         <div className="descricao">Ver pontos/carga horária.</div>
         <div className="link">Bater Ponto</div>
         <div className="descricao">Marcar horário de entrada/saída</div>

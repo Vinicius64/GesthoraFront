@@ -106,7 +106,12 @@ const CriarUsuarioPage = () => {
   }, [empresaInput]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === 'cep') {
+      setForm({ ...form, cep: formatarCEP(value) });
+    } else {
+      setForm({ ...form, [name]: value });
+    }
   };
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -132,6 +137,50 @@ const CriarUsuarioPage = () => {
     return data; // Se já estiver no formato ISO
   };
 
+  function formatarCPF(valor: string) {
+    return valor
+      .replace(/\D/g, '')
+      .slice(0, 11)
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  }
+
+  function limparCPF(valor: string) {
+    return valor.replace(/\D/g, '').slice(0, 11);
+  }
+
+  function formatarTelefone(valor: string) {
+    valor = valor.replace(/\D/g, '').slice(0, 11);
+    if (valor.length <= 10) {
+      return valor.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3').replace(/-$/, '');
+    } else {
+      return valor.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3').replace(/-$/, '');
+    }
+  }
+
+  function paraInputDate(data: string) {
+    if (!data) return '';
+    if (data.includes('/')) {
+      const [dia, mes, ano] = data.split('/');
+      return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
+    }
+    if (data.includes('T')) {
+      return data.split('T')[0];
+    }
+    return data;
+  }
+
+  function paraDDMMAAAA(data: string) {
+    if (!data) return '';
+    const [ano, mes, dia] = data.split('-');
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  function formatarCEP(valor: string) {
+    return valor.replace(/\D/g, '').slice(0, 8).replace(/(\d{5})(\d{0,3})/, (m, p1, p2) => p2 ? `${p1}-${p2}` : p1);
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSuccess('');
@@ -144,12 +193,12 @@ const CriarUsuarioPage = () => {
         email: form.email,
         senha: form.senha,
         telefone: form.telefone,
-        cpf: form.cpf,
-        data_nascimento: formatarDataParaISO(form.dataNascimento),
+        cpf: limparCPF(form.cpf),
+        data_nascimento: paraDDMMAAAA(form.dataNascimento),
         escolaridade: form.escolaridade,
         genero: form.genero,
         endereco: form.endereco,
-        cep: form.cep,
+        cep: form.cep.replace(/\D/g, ''),
         cargo: form.cargo,
         ativo: true,
         empresa_id: form.empresa,
@@ -184,34 +233,32 @@ const CriarUsuarioPage = () => {
 
   return (
     <div className="criar-usuario-container">
-      {/* Menu lateral */}
       <div className="menu-lateral">
         <div className="cargo">Administrador</div>
         <div className="nome">{adminNome}</div>
         <div className="link" onClick={() => navigate('/criar-usuario')}>Criar Usuários</div>
         <div className="descricao">Adicionar Usuários</div>
-        <div className="link" onClick={() => navigate('/editar-usuarios')}>Editar Usuários</div>
+        <div className="link" onClick={() => navigate('/editar-usuario')}>Editar Usuários</div>
         <div className="descricao">Altera informações de Usuários</div>
         <div className="link" onClick={() => navigate('/gerenciar-empresa')}>Gerenciar Empresa</div>
         <div className="descricao">Gerência empresas</div>
         <div className="link" onClick={logout}>Sair</div>
       </div>
-      {/* Conteúdo principal */}
       <div className="conteudo-principal">
         <h1 className="titulo-pagina">Criar Usuários</h1>
         <form className="formulario-usuario" onSubmit={handleSubmit}>
           {error && <div className="error-message">{error}</div>}
           {success && <div className="success-message">{success}</div>}
           <div className="form-grid-duas-colunas">
-            <div className="form-group">
+            <div className="form-group col-span-2">
               <label className="form-label" htmlFor="nome">Nome</label>
-              <input className="form-input" type="text" id="nome" name="nome" value={form.nome} onChange={handleChange} required />
-            </div>
-            <div className="form-group">
-              <label className="form-label" htmlFor="email">Email</label>
-              <input className="form-input" type="email" id="email" name="email" value={form.email} onChange={handleChange} required />
+              <input className="form-input" type="text" id="nome" name="nome" value={form.nome} onChange={handleChange} required maxLength={55} />
             </div>
             <div className="form-group col-span-2">
+              <label className="form-label" htmlFor="email">Email</label>
+              <input className="form-input" type="email" id="email" name="email" value={form.email} onChange={handleChange} required maxLength={55} />
+            </div>
+            <div className="form-group">
               <label className="form-label" htmlFor="senha">Senha</label>
               <input className="form-input" type="password" id="senha" name="senha" value={form.senha} onChange={handleChange} required />
             </div>
@@ -221,11 +268,11 @@ const CriarUsuarioPage = () => {
             </div>
             <div className="form-group">
               <label className="form-label" htmlFor="telefone">Telefone</label>
-              <input className="form-input" type="text" id="telefone" name="telefone" value={form.telefone} onChange={handleChange} />
+              <input className="form-input" type="text" id="telefone" name="telefone" value={formatarTelefone(form.telefone)} onChange={e => setForm({ ...form, telefone: formatarTelefone(e.target.value) })} maxLength={15} />
             </div>
             <div className="form-group">
               <label className="form-label" htmlFor="cpf">CPF</label>
-              <input className="form-input" type="text" id="cpf" name="cpf" value={form.cpf} onChange={handleChange} />
+              <input className="form-input" type="text" id="cpf" name="cpf" value={formatarCPF(form.cpf)} onChange={e => setForm({ ...form, cpf: limparCPF(e.target.value) })} maxLength={14} />
             </div>
             <div className="form-group">
               <label className="form-label" htmlFor="tipoUsuario">Tipo de Usuário</label>
@@ -253,9 +300,9 @@ const CriarUsuarioPage = () => {
               <label className="form-label" htmlFor="cep">CEP</label>
               <input className="form-input" type="text" id="cep" name="cep" value={form.cep} onChange={handleChange} />
             </div>
-            <div className="form-group">
+            <div className="form-group col-span-2">
               <label className="form-label" htmlFor="endereco">Endereço</label>
-              <input className="form-input" type="text" id="endereco" name="endereco" value={form.endereco} onChange={handleChange} />
+              <input className="form-input" type="text" id="endereco" name="endereco" value={form.endereco} onChange={handleChange} maxLength={55} />
             </div>
             <div className="form-group col-span-2">
               <label className="form-label" htmlFor="empresa">Empresa</label>
@@ -286,7 +333,7 @@ const CriarUsuarioPage = () => {
             </div>
             <div className="form-group">
               <label className="form-label" htmlFor="dataNascimento">Data de Nascimento</label>
-              <input className="form-input" type="text" id="dataNascimento" name="dataNascimento" value={form.dataNascimento} onChange={handleChange} placeholder="XX/XX/XXXX" />
+              <input className="form-input" type="date" id="dataNascimento" name="dataNascimento" value={paraInputDate(form.dataNascimento)} onChange={e => setForm({ ...form, dataNascimento: e.target.value })} />
             </div>
             {form.tipoUsuario === 'funcionario' && (
               <>
