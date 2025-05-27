@@ -162,7 +162,6 @@ const PontosFuncionarioPage = () => {
 
   const nome = localStorage.getItem('nome') || 'Usuário';
 
-  
   const handleSelecionarTodos = () => {
     const todasDatas = registros.map(r => r.data).sort();
     if (selecionados.length === todasDatas.length) {
@@ -172,7 +171,6 @@ const PontosFuncionarioPage = () => {
     }
   };
 
-  
   const handleVisualizarRegistro = async (id_registro: number) => {
     setModalVisualizar(true);
     setLoadingVisualizar(true);
@@ -191,7 +189,6 @@ const PontosFuncionarioPage = () => {
     }
   };
 
-  
   const registrosOrdenados = [...registros].sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
 
   return (

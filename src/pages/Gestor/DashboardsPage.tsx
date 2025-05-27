@@ -122,13 +122,11 @@ const DashboardsPage = () => {
     }
   };
 
-  
   const dadosGrafico = relatorio?.map((linha) => ({
     dia: parseInt(linha.data.split('-')[2], 10),
     horas: linha.horas + (linha.minutos / 60),
   })) || [];
 
-  
   const dadosGraficoHorarios = relatorioHorarios?.map((linha) => {
     const dia = parseInt(linha.data.split('-')[2], 10);
     
@@ -140,7 +138,6 @@ const DashboardsPage = () => {
     };
   }) || [];
 
-  
   const minToHora = (min: number|null) => {
     if (min === null) return '';
     const h = Math.floor(min / 60);
@@ -148,7 +145,6 @@ const DashboardsPage = () => {
     return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
   };
 
-  
   const tooltipHoraFormatter = (value: any) => {
     if (typeof value === 'number') return minToHora(value);
     if (typeof value === 'string' && !isNaN(Number(value))) return minToHora(Number(value));
