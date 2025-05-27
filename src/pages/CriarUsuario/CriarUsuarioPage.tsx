@@ -87,7 +87,6 @@ const CriarUsuarioPage = () => {
     fetchAdmin();
   }, []);
 
-  // Buscar empresas conforme o usuário digita
   useEffect(() => {
     const buscarEmpresas = async () => {
       if (!empresaInput) return setEmpresas([]);
@@ -129,12 +128,12 @@ const CriarUsuarioPage = () => {
 
   const formatarDataParaISO = (data: string) => {
     if (!data) return '';
-    // Aceita formatos DD/MM/YYYY ou DD-MM-YYYY
+    
     const partes = data.includes('/') ? data.split('/') : data.split('-');
     if (partes.length === 3) {
       return `${partes[2]}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
     }
-    return data; // Se já estiver no formato ISO
+    return data; 
   };
 
   function formatarCPF(valor: string) {
