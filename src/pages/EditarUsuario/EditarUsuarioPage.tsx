@@ -134,6 +134,7 @@ export default function EditarUsuarioPage() {
         dias_semana: tipo === 'funcionario' ? diasSemana : undefined,
         telefone: usuario.telefone,
         cep: usuario.cep.replace(/\D/g, ''),
+        carga_horaria_diaria: usuario.carga_horaria_diaria === '' || usuario.carga_horaria_diaria === undefined || usuario.carga_horaria_diaria === null ? undefined : Number(usuario.carga_horaria_diaria),
       };
       await axios.put(`${api.baseURL}${api.endpoints.editUser}/${usuario.id_funcionario || usuario.id_gestor}`, payload, {
         headers: { Authorization: `Bearer ${token}` }
@@ -215,11 +216,17 @@ export default function EditarUsuarioPage() {
                 <label className="form-label" htmlFor="cep">CEP</label>
                 <input className="form-input" type="text" id="cep" name="cep" value={formatarCEP(usuario.cep || '')} onChange={handleChange} />
               </div>
-              {/* Campo Carga Horária Diária só aparece se existir no usuário */}
               {usuario.carga_horaria_diaria !== undefined && usuario.carga_horaria_diaria !== null && (
                 <div className="form-group">
                   <label className="form-label" htmlFor="carga_horaria_diaria">Carga Horária Diária</label>
-                  <input className="form-input" type="text" id="carga_horaria_diaria" name="carga_horaria_diaria" value={usuario.carga_horaria_diaria || ''} onChange={handleChange} />
+                  <input
+                    className="form-input"
+                    type="number"
+                    id="carga_horaria_diaria"
+                    name="carga_horaria_diaria"
+                    value={usuario.carga_horaria_diaria || ''}
+                    onChange={e => setUsuario({ ...usuario, carga_horaria_diaria: e.target.value === '' ? '' : parseInt(e.target.value, 10) })}
+                  />
                 </div>
               )}
               <div className="form-group">

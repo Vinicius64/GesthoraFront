@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 //export const API_BASE_URL = 'https://gesthora.onrender.com';
 export const API_BASE_URL = 'http://localhost:3306';
 
@@ -18,4 +20,22 @@ export const api = {
     managerEmployees: '/manager/employees',
     managerEmployee: (id: string) => `/manager/employee/${id}`,
   },
-}; 
+};
+
+// Interceptor global para tratar token inválido
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    if (
+      error.response &&
+      (error.response.status === 401 || error.response.status === 403 ||
+        (error.response.data && error.response.data.message === 'Token inválido ou não fornecido'))
+    ) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('perfil');
+      localStorage.removeItem('nome');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+); 
