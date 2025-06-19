@@ -550,7 +550,7 @@ const PontosFuncionarioPage = () => {
                         {registroVisualizar.pontos && registroVisualizar.pontos.length > 0 ? (
                           registroVisualizar.pontos.map((p: any, idx: number) => (
                             <tr key={idx}>
-                              <td>{new Date(p.data_hora).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td>
+                              <td>{p.data_hora.split('T')[1]?.split('.')[0] || p.data_hora}</td>
                             </tr>
                           ))
                         ) : (

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { api } from '../../config/api';
 import '../Gestor/DashboardsPage.css';
+import './EditarFuncionarioGestorPage.css';
 
 const campos = [
   { name: 'nome', label: 'Nome', type: 'text' },
@@ -15,6 +16,29 @@ const campos = [
   { name: 'carga_horaria_diaria', label: 'Carga Horária Diária', type: 'number' },
 ];
 
+interface RegistroPonto {
+  id_registro_ponto: string;
+  date: string;
+  status: string;
+  tempoHora: number;
+  tempoMinutos: number;
+  motivoInconsistencia?: string;
+  pontos: {
+    id_ponto: string;
+    data_hora: string;
+    localizacao: string;
+  }[];
+}
+
+interface Paginacao {
+  pagina_atual: number;
+  itens_por_pagina: number;
+  total_registros: number;
+  total_paginas: number;
+  tem_proxima_pagina: boolean;
+  tem_pagina_anterior: boolean;
+}
+
 const EditarFuncionarioGestorPage = () => {
   const [busca, setBusca] = useState('');
   const [funcionarios, setFuncionarios] = useState<{ id_funcionario: string, nome: string }[]>([]);
@@ -24,6 +48,17 @@ const EditarFuncionarioGestorPage = () => {
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState('');
+  
+  const [registrosPonto, setRegistrosPonto] = useState<RegistroPonto[]>([]);
+  const [paginacao, setPaginacao] = useState<Paginacao | null>(null);
+  const [loadingPontos, setLoadingPontos] = useState(false);
+  const [erroPontos, setErroPontos] = useState('');
+  const [filtroStatus, setFiltroStatus] = useState('');
+  
+  // Estados para modal de pontos
+  const [modalPontosAberto, setModalPontosAberto] = useState(false);
+  const [pontosSelecionados, setPontosSelecionados] = useState<{ id_ponto: string; data_hora: string; localizacao: string; }[]>([]);
+  const [dataSelecionada, setDataSelecionada] = useState('');
 
   const handleBuscarFuncionarios = async (nome: string) => {
     setBusca(nome);
@@ -31,6 +66,9 @@ const EditarFuncionarioGestorPage = () => {
     setDados(null);
     setErro('');
     setSucesso('');
+    setRegistrosPonto([]);
+    setPaginacao(null);
+    setErroPontos('');
     if (!nome || nome.length < 2) {
       setFuncionarios([]);
       return;
@@ -63,12 +101,92 @@ const EditarFuncionarioGestorPage = () => {
       }
       setDados(funcionario);
       setEditando(false);
+      
+      await buscarRegistrosPonto(id, 1, '');
     } catch (err: any) {
       setErro(err?.response?.data?.message || 'Erro ao buscar funcionário.');
       setDados(null);
     } finally {
       setLoading(false);
     }
+  };
+
+  const buscarRegistrosPonto = async (id: string, pagina: number = 1, statusFiltro?: string) => {
+    setLoadingPontos(true);
+    setErroPontos('');
+    try {
+      const token = localStorage.getItem('token');
+      const params = new URLSearchParams({
+        pagina: pagina.toString(),
+        limite: '5'
+      });
+      
+      const statusParaFiltrar = statusFiltro !== undefined ? statusFiltro : filtroStatus;
+      
+      if (statusParaFiltrar && statusParaFiltrar.trim() !== '') {
+        params.append('status', statusParaFiltrar);
+      }
+      
+      const res = await axios.get(`${api.baseURL}/manager/employee/${id}/registros-ponto?${params}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setRegistrosPonto(res.data.registros_ponto || []);
+      setPaginacao(res.data.paginacao);
+    } catch (err: any) {
+      setErroPontos(err?.response?.data?.message || 'Erro ao buscar registros de ponto.');
+      setRegistrosPonto([]);
+      setPaginacao(null);
+    } finally {
+      setLoadingPontos(false);
+    }
+  };
+
+  const handleFiltroStatus = (status: string) => {
+    setFiltroStatus(status);
+    if (funcionarioId) {
+      buscarRegistrosPonto(funcionarioId, 1, status);
+    }
+  };
+
+  const handlePagina = (pagina: number) => {
+    if (funcionarioId) {
+      buscarRegistrosPonto(funcionarioId, pagina);
+    }
+  };
+
+  const formatarData = (data: string) => {
+    const [ano, mes, dia] = data.split('-');
+    return `${dia}/${mes}/${ano}`;
+  };
+
+  const formatarHora = (dataHora: string) => {
+    const match = dataHora.match(/(\d{2}):(\d{2}):/);
+    if (match) {
+      return `${match[1]}:${match[2]}`;
+    }
+    return dataHora;
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'FECHADO': return 'Fechado';
+      case 'INCONSISTENTE': return 'Inconsistente';
+      case 'AJUSTADO': return 'Ajustado';
+      default: return status;
+    }
+  };
+
+  const abrirModalPontos = (pontos: { id_ponto: string; data_hora: string; localizacao: string; }[], data: string) => {
+    setPontosSelecionados(pontos);
+    setDataSelecionada(data);
+    setModalPontosAberto(true);
+  };
+
+  const fecharModalPontos = () => {
+    setModalPontosAberto(false);
+    setPontosSelecionados([]);
+    setDataSelecionada('');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -204,6 +322,183 @@ const EditarFuncionarioGestorPage = () => {
                 {erro && <div className="error-message" style={{ marginTop: 16 }}>{erro}</div>}
               </form>
             )
+          )}
+
+          {dados && (
+            <div className="registros-ponto-section">
+              <h2 className="registros-ponto-title">Registros de Ponto</h2>
+              
+              <div className="filtros-container">
+                <label className="filtros-label">Filtrar por status:</label>
+                <button
+                  type="button"
+                  className={`filtro-btn filtro-btn-todos ${filtroStatus === '' ? '' : 'inactive'}`}
+                  onClick={() => handleFiltroStatus('')}
+                >
+                  Todos
+                </button>
+                <button
+                  type="button"
+                  className={`filtro-btn filtro-btn-fechado ${filtroStatus === 'FECHADO' ? '' : 'inactive'}`}
+                  onClick={() => handleFiltroStatus('FECHADO')}
+                >
+                  Fechado
+                </button>
+                <button
+                  type="button"
+                  className={`filtro-btn filtro-btn-ajustado ${filtroStatus === 'AJUSTADO' ? '' : 'inactive'}`}
+                  onClick={() => handleFiltroStatus('AJUSTADO')}
+                >
+                  Ajustado
+                </button>
+                <button
+                  type="button"
+                  className={`filtro-btn filtro-btn-inconsistente ${filtroStatus === 'INCONSISTENTE' ? '' : 'inactive'}`}
+                  onClick={() => handleFiltroStatus('INCONSISTENTE')}
+                >
+                  Inconsistente
+                </button>
+              </div>
+
+              {loadingPontos && (
+                <div className="loading-pontos">
+                  <p>Carregando registros de ponto...</p>
+                </div>
+              )}
+
+              {erroPontos && (
+                <div className="error-message error-pontos">{erroPontos}</div>
+              )}
+
+              {!loadingPontos && registrosPonto.length > 0 && (
+                <>
+                  <div className="tabela-container">
+                    <table className="tabela-registros">
+                      <thead>
+                        <tr>
+                          <th>Data</th>
+                          <th>Status</th>
+                          <th>Tempo Trabalhado</th>
+                          <th>Pontos</th>
+                          <th>Motivo Inconsistência</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {registrosPonto.map((registro) => (
+                          <tr key={registro.id_registro_ponto}>
+                            <td>{formatarData(registro.date)}</td>
+                            <td>
+                              <span className={`status-badge status-${registro.status.toLowerCase()}`}>
+                                {getStatusText(registro.status)}
+                              </span>
+                            </td>
+                            <td>{registro.tempoHora}h {registro.tempoMinutos}min</td>
+                            <td>
+                              <button
+                                type="button"
+                                className="btn-ver-pontos"
+                                onClick={() => abrirModalPontos(registro.pontos, formatarData(registro.date))}
+                              >
+                                Ver {registro.pontos.length} ponto{registro.pontos.length > 1 ? 's' : ''}
+                              </button>
+                            </td>
+                            <td>{registro.motivoInconsistencia || '-'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {paginacao && paginacao.total_paginas > 1 && (
+                    <div className="paginacao-container">
+                      <button
+                        type="button"
+                        className="botao-buscar paginacao-btn"
+                        onClick={() => handlePagina(paginacao.pagina_atual - 1)}
+                        disabled={!paginacao.tem_pagina_anterior}
+                      >
+                        Anterior
+                      </button>
+                      
+                      <span className="paginacao-info">
+                        Página {paginacao.pagina_atual} de {paginacao.total_paginas}
+                      </span>
+                      
+                      <button
+                        type="button"
+                        className="botao-buscar paginacao-btn"
+                        onClick={() => handlePagina(paginacao.pagina_atual + 1)}
+                        disabled={!paginacao.tem_proxima_pagina}
+                      >
+                        Próxima
+                      </button>
+                    </div>
+                  )}
+
+                  {paginacao && (
+                    <div className="paginacao-stats">
+                      Mostrando {((paginacao.pagina_atual - 1) * paginacao.itens_por_pagina) + 1} a {Math.min(paginacao.pagina_atual * paginacao.itens_por_pagina, paginacao.total_registros)} de {paginacao.total_registros} registros
+                    </div>
+                  )}
+                </>
+              )}
+
+              {!loadingPontos && registrosPonto.length === 0 && !erroPontos && (
+                <div className="empty-state">
+                  <p>Nenhum registro de ponto encontrado para este funcionário.</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Modal de Pontos */}
+          {modalPontosAberto && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h3 className="modal-title">
+                    Pontos do dia {dataSelecionada}
+                  </h3>
+                  <button
+                    type="button"
+                    className="modal-close-btn"
+                    onClick={fecharModalPontos}
+                  >
+                    ×
+                  </button>
+                </div>
+                
+                <div className="pontos-list">
+                  {pontosSelecionados.map((ponto, index) => (
+                    <div key={ponto.id_ponto} className="ponto-item">
+                      <div className="ponto-header">
+                        <strong className="ponto-numero">
+                          {index + 1}º ponto
+                        </strong>
+                        <span className="ponto-hora">
+                          {formatarHora(ponto.data_hora)}
+                        </span>
+                      </div>
+                      {ponto.localizacao && (
+                        <div className="ponto-localizacao">
+                          📍 {ponto.localizacao}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="modal-close-btn-footer"
+                    onClick={fecharModalPontos}
+                  >
+                    Fechar
+                  </button>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>

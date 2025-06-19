@@ -1,0 +1,316 @@
+.registros-ponto-section {
+  margin-top: 32px;
+}
+
+.registros-ponto-title {
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.filtros-container {
+  margin-bottom: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.filtros-label {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.filtro-btn {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filtro-btn:hover {
+  opacity: 0.8;
+}
+
+.filtro-btn-todos {
+  background: #007bff;
+  color: #fff;
+}
+
+.filtro-btn-todos.inactive {
+  background: #fff;
+  color: #333;
+}
+
+.filtro-btn-fechado {
+  background: #28a745;
+  color: #fff;
+}
+
+.filtro-btn-fechado.inactive {
+  background: #fff;
+  color: #333;
+}
+
+.filtro-btn-ajustado {
+  background: #ffc107;
+  color: #fff;
+}
+
+.filtro-btn-ajustado.inactive {
+  background: #fff;
+  color: #333;
+}
+
+.filtro-btn-inconsistente {
+  background: #dc3545;
+  color: #fff;
+}
+
+.filtro-btn-inconsistente.inactive {
+  background: #fff;
+  color: #333;
+}
+
+.loading-pontos {
+  text-align: center;
+  padding: 20px;
+}
+
+.error-pontos {
+  margin-bottom: 16px;
+}
+
+.tabela-container {
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+.tabela-registros {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+}
+
+.tabela-registros th {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  background: #f8f9fa;
+}
+
+.tabela-registros td {
+  padding: 12px;
+  border: 1px solid #ddd;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.status-fechado {
+  background: #28a745;
+}
+
+.status-inconsistente {
+  background: #dc3545;
+}
+
+.status-ajustado {
+  background: #ffc107;
+}
+
+.status-default {
+  background: #6c757d;
+}
+
+/* Botão ver pontos */
+.btn-ver-pontos {
+  padding: 6px 12px;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  background: #007bff;
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.btn-ver-pontos:hover {
+  background: #0056b3;
+  border-color: #0056b3;
+}
+
+/* Paginação */
+.paginacao-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.paginacao-info {
+  font-size: 14px;
+}
+
+.paginacao-btn {
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.paginacao-stats {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Modal de pontos */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.modal-title {
+  margin: 0;
+  color: #333;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  color: #333;
+}
+
+.pontos-list {
+  margin-bottom: 20px;
+}
+
+.ponto-item {
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background: #f9f9f9;
+}
+
+.ponto-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.ponto-numero {
+  color: #333;
+  font-weight: bold;
+}
+
+.ponto-hora {
+  font-size: 18px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.ponto-localizacao {
+  font-size: 14px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.modal-close-btn-footer {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn-footer:hover {
+  background: #f8f9fa;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .filtros-container {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .filtro-btn {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+  
+  .tabela-container {
+    font-size: 12px;
+  }
+  
+  .tabela-registros th,
+  .tabela-registros td {
+    padding: 8px;
+  }
+  
+  .modal-content {
+    width: 95%;
+    padding: 16px;
+  }
+}

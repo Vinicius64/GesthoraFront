@@ -45,7 +45,6 @@ const BaterPontoPage = () => {
     }
   };
 
-  
   const carregarTempoTrabalhado = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -199,7 +198,7 @@ const BaterPontoPage = () => {
           )}
           {pontos.map((p, i) => (
             <div key={p.id_ponto || i} className="item-ponto">
-              {new Date(p.data_hora).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} - {p.localizacao?.length > 25 ? p.localizacao.slice(0, 25) + '...' : p.localizacao}
+              {p.data_hora.split('T')[1]?.split('.')[0]?.substring(0, 5) || p.data_hora} - {p.localizacao?.length > 25 ? p.localizacao.slice(0, 25) + '...' : p.localizacao}
             </div>
           ))}
         </div>

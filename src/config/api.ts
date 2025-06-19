@@ -22,7 +22,6 @@ export const api = {
   },
 };
 
-// Interceptor global para tratar token inválido
 axios.interceptors.response.use(
   response => response,
   error => {
